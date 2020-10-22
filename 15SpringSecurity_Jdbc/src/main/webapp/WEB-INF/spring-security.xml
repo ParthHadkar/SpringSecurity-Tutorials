@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"  
+    xmlns:beans="http://www.springframework.org/schema/beans"  
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+    xsi:schemaLocation="http://www.springframework.org/schema/beans  
+    http://www.springframework.org/schema/beans/spring-beans.xsd 
+    http://www.springframework.org/schema/security  
+    http://www.springframework.org/schema/security/spring-security-5.3.xsd">  
+<!--    <http>  
+<intercept-url pattern="/**" access="authenticated"/>  
+<form-login />  
+<http-basic />  
+</http>  -->
+    <http auto-config="true">  
+   <!--  <csrf disabled="true"/>
+         
+        <intercept-url pattern="/" access="permitAll()" /> -->
+        <intercept-url pattern="/" access="hasRole('ROLE_EMPLOYEE')" />  
+         <intercept-url pattern="/leaders/**" access="hasRole('ROLE_MANAGER')" />  
+          <intercept-url pattern="/systems/**" access="hasRole('ROLE_ADMIN')" />  
+          <form-login login-page='/Login' login-processing-url="/autenticateUser"/>
+          <!-- default  login-page='/login' login-processing-url="/j_spring_security_check" -->
+          <logout/>  
+		<access-denied-handler error-page="/access-denied"/>
+    </http>  
+    <authentication-manager>  
+     <!--  <authentication-provider>  
+        <user-service >  
+        <user name="parth" password="{noop}Test@1234" authorities="ROLE_EMPLOYEE" /> hasRole('ROLE_EMPLOYEE') 
+         <user name="omkar" password="{noop}Test@123" authorities="ROLE_EMPLOYEE,ROLE_MANAGER" /> 
+          <user name="nikhil" password="{noop}Test@123" authorities="ROLE_EMPLOYEE,ROLE_ADMIN" /> 
+        </user-service>  
+      </authentication-provider>   -->
+      <!-- authentication from database -->
+     
+        <authentication-provider>
+            <jdbc-user-service data-source-ref="myDataSource" />
+            <!-- 
+             users-by-username-query="select username,password, enabled from users where username=?"
+       authorities-by-username-query="Select username, concat('ROLE_',user_role) user_role from user_roles where username=?" 
+        -->
+                </authentication-provider>
+    </authentication-manager>  
+    
+</beans:beans>  
